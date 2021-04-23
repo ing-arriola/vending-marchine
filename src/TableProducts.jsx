@@ -1,7 +1,7 @@
 import React,{ useState,useEffect } from 'react'
 import axios from 'axios'
 import {Table,Button} from 'react-bootstrap'
-import { FaPlus,FaEdit,FaTrash,FaShoppingCart } from "react-icons/fa";
+import { FaPlus,FaEdit,FaShoppingCart } from "react-icons/fa";
 import NewProduct from './NewProdudct'
 import moment from 'moment'
 import Notification from './Notification/Notification'
@@ -174,12 +174,12 @@ const TableProducts = ({products,getProducts}) => {
                 >
                 <FaEdit />
               </Button>
-              <Button
+              {/*<Button
                 variant="primary"
                 onClick={()=>placeNerOrder(product)}
                 >
                 <FaTrash />
-              </Button>
+              </Button>*/}
               </td>
             </tr>
         ))}
