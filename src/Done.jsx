@@ -10,7 +10,7 @@ const Done = ({product}) => {
             name:product.name,
             time:product.time,
             state:2})
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <div>

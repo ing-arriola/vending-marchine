@@ -5,7 +5,8 @@ import TableProducts from './TableProducts'
 const Order = () => { 
     const [products,setProducts] = useState([])
 
-    useEffect(()=>{
+    const getProducts = () => {
+        console.log('PUTA')
         const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
         dataFirebase.get('/products.json')
         .then(res => {
@@ -15,11 +16,15 @@ const Order = () => {
             }
             setProducts(prods)
         } )
+    }
+
+    useEffect(()=>{
+        getProducts()
     },[])
 
     return (
         <>
-         <TableProducts products={products}/>  
+         <TableProducts products={products} getProducts={getProducts}/>  
         </>
     )
 }

@@ -4,27 +4,74 @@ import {Table,Button} from 'react-bootstrap'
 import { FaPlus } from "react-icons/fa";
 import NewProduct from './NewProdudct'
 import moment from 'moment'
-const TableProducts = ({products}) => {
+import Notification from './Notification/Notification'
+
+const TableProducts = ({products,getProducts}) => {
   const [show,setShow] = useState(false)
+  const [confirm,setConfirm] = useState(false)
   const [newProduct,setNewProduct] = useState({
     name:"",
     minutes:"",
     seconds:"",
+    nameError:"",
+    minutesError:"",
+    secondsError:""
   })
-  const {name,minutes,seconds} = newProduct
+  const {name,minutes,seconds,nameError,minutesError,secondsError} = newProduct
     const handleAddProduct = () => {
       setShow(true)
     }
+
     const handleChange = (e) => {
       setNewProduct({ ...newProduct, [e.target.name]: e.target.value })
     }
+
+    const validate = () => {
+      let minutesError = ""
+      let secondsError = ""
+
+      if (minutes > 59 ) {
+        minutesError = "Minutes can't be greater than 60"
+      }
+
+      if(seconds > 59) {
+        secondsError = "Seconds can't be greater than 60"
+      }
+
+      if(minutesError){
+        setNewProduct({...newProduct,minutesError:minutesError})
+        return false
+      }
+
+      if(secondsError){
+        setNewProduct({...newProduct,minutesError:minutesError})
+        return false
+      }
+
+      return true
+
+    }
+     
     const sendData = (e) => {
       e.preventDefault()
-      const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
+      const isValid = validate()
+      if(isValid){
+        const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
       dataFirebase.post('/products.json',newProduct)
         .then(res => console.log(res))
         setShow(false)
+        setNewProduct({
+          name:"",
+          minutes:"",
+          seconds:"",
+          nameError:"",
+          minutesError:"",
+          secondsError:""
+        })
+        getProducts()
+      }
     }
+
     const placeNerOrder = (almostNewOrder) => {
       const currentTime = new Date()
       const timeStart = `${currentTime.getHours()}:${currentTime.getMinutes()}:${currentTime.getSeconds()}`
@@ -33,18 +80,22 @@ const TableProducts = ({products}) => {
       const newOrder = {...almostNewOrder,state:1,time:timeTarget}
       const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
       dataFirebase.post('/processing.json',newOrder)
-        .then(res => console.log(res))
+        .then(res => setConfirm(true))
         .catch(err => console.log(err) )
     }
     return (
       <>
-      <div className='d-flex w-75 justify-content-end align-items-center mb-3'>
+      <div className='d-flex justify-content-end align-items-center mb-3'>
        <label className="mr-2" >Add new product</label>
-       <Button className='rounded-circle' onClick={handleAddProduct}>
+       <Button 
+          className='rounded-circle' 
+          variant="success"
+          onClick={handleAddProduct}>
           <FaPlus/>
         </Button>
       </div>
-        <Table striped bordered hover className="w-75">
+      <div  className="d-flex justify-content-center">
+        <Table striped bordered hover>
           <thead>
             <tr>
               <th className="text-center">Product</th>
@@ -77,7 +128,16 @@ const TableProducts = ({products}) => {
           name={name}
           minutes={minutes}
           seconds={seconds}
+          nameError={nameError}
+          minutesError={minutesError}
+          secondsError={secondsError}
         />
+        </div>
+        <Notification 
+          messsage="Nueva orden agregada con exito"
+          setConfirm={setConfirm}
+          confirm={confirm}
+          />
     </>
     )
 }

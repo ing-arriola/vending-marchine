@@ -12,7 +12,6 @@ const Timer = ({ startedDate,product }) => {
       tick()
     }, 1000)
     return () => clearInterval(inter.current)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate])
 
   const difference = startedDate.getTime() - currentDate
