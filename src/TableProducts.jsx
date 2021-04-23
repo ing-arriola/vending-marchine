@@ -3,6 +3,7 @@ import axios from 'axios'
 import {Table,Button} from 'react-bootstrap'
 import { FaPlus } from "react-icons/fa";
 import NewProduct from './NewProdudct'
+import moment from 'moment'
 const TableProducts = ({products}) => {
   const [show,setShow] = useState(false)
   const [newProduct,setNewProduct] = useState({
@@ -25,9 +26,11 @@ const TableProducts = ({products}) => {
         setShow(false)
     }
     const placeNerOrder = (almostNewOrder) => {
-      const currentTime = new Date();
-      const time = `${currentTime.getHours()}:${currentTime.getMinutes()}:${currentTime.getHours()}`
-      const newOrder = {...almostNewOrder,state:1,time:time}
+      const currentTime = new Date()
+      const timeStart = `${currentTime.getHours()}:${currentTime.getMinutes()}:${currentTime.getSeconds()}`
+      const d = moment.duration(timeStart).add(moment.duration(`00:${almostNewOrder.minutes}:${almostNewOrder.seconds}`))
+      const timeTarget = moment.utc(d.as('milliseconds')).format("HH:mm:ss")
+      const newOrder = {...almostNewOrder,state:1,time:timeTarget}
       const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
       dataFirebase.post('/processing.json',newOrder)
         .then(res => console.log(res))
