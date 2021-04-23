@@ -6,7 +6,6 @@ import Timer from './Timer'
 //${product.time}
 
 const TableProcessing = ({products}) => {
-    console.log(products)
     return (
       <>
         <Table striped bordered hover className="w-75">
