@@ -6,7 +6,6 @@ const Order = () => {
     const [products,setProducts] = useState([])
 
     const getProducts = () => {
-        console.log('PUTA')
         const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
         dataFirebase.get('/products.json')
         .then(res => {

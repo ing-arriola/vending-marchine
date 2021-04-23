@@ -1,13 +1,16 @@
-import React,{ useState } from 'react'
+import React,{ useState,useEffect } from 'react'
 import axios from 'axios'
 import {Table,Button} from 'react-bootstrap'
-import { FaPlus } from "react-icons/fa";
+import { FaPlus,FaEdit,FaTrash,FaShoppingCart } from "react-icons/fa";
 import NewProduct from './NewProdudct'
 import moment from 'moment'
 import Notification from './Notification/Notification'
+import EditProduct from './EditProduct'
 
 const TableProducts = ({products,getProducts}) => {
   const [show,setShow] = useState(false)
+  const [showEdit,setShowEdit] = useState(false)
+  const [idEdition,setIdEdition] = useState("")
   const [confirm,setConfirm] = useState(false)
   const [newProduct,setNewProduct] = useState({
     name:"",
@@ -17,6 +20,21 @@ const TableProducts = ({products,getProducts}) => {
     minutesError:"",
     secondsError:""
   })
+
+  useEffect(() => {
+    if(!showEdit && !show ){
+      setNewProduct({
+        name:"",
+        minutes:"",
+        seconds:"",
+        nameError:"",
+        minutesError:"",
+        secondsError:""
+      })
+    }
+    
+  }, [show,showEdit])
+
   const {name,minutes,seconds,nameError,minutesError,secondsError} = newProduct
     const handleAddProduct = () => {
       setShow(true)
@@ -72,6 +90,40 @@ const TableProducts = ({products,getProducts}) => {
       }
     }
 
+    const showEdition = (e,product) => {
+      setShowEdit(true)
+      setNewProduct({
+          name:product.name,
+          minutes:product.minutes,
+          seconds:product.seconds,
+          nameError:"",
+          minutesError:"",
+          secondsError:""
+      })
+      setIdEdition(product.id)
+      
+    }
+
+    const sendEdition = (e) => {
+      e.preventDefault()
+      const isValid = validate()
+      if(isValid){
+        const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
+      dataFirebase.put(`/products/${idEdition}.json`,newProduct)
+        .then(res => console.log(res))
+        setShowEdit(false)
+        setNewProduct({
+          name:"",
+          minutes:"",
+          seconds:"",
+          nameError:"",
+          minutesError:"",
+          secondsError:""
+        })
+        getProducts()
+      }
+    }
+
     const placeNerOrder = (almostNewOrder) => {
       const currentTime = new Date()
       const timeStart = `${currentTime.getHours()}:${currentTime.getMinutes()}:${currentTime.getSeconds()}`
@@ -113,17 +165,44 @@ const TableProducts = ({products,getProducts}) => {
                 variant="primary"
                 onClick={()=>placeNerOrder(product)}
                 >
-                Order
+                <FaShoppingCart/>
+              </Button>
+              <Button
+                className="mx-3"
+                variant="primary"
+                onClick={(e)=>showEdition(e,product)}
+                >
+                <FaEdit />
+              </Button>
+              <Button
+                variant="primary"
+                onClick={()=>placeNerOrder(product)}
+                >
+                <FaTrash />
               </Button>
               </td>
             </tr>
         ))}
           </tbody>
         </Table>
+
         < NewProduct 
           show={show}
           setShow={setShow}
           sendData={sendData}
+          handleChange={handleChange}
+          name={name}
+          minutes={minutes}
+          seconds={seconds}
+          nameError={nameError}
+          minutesError={minutesError}
+          secondsError={secondsError}
+        />
+        
+        < EditProduct 
+          show={showEdit}
+          setShow={setShowEdit}
+          sendData={sendEdition}
           handleChange={handleChange}
           name={name}
           minutes={minutes}
