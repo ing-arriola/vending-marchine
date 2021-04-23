@@ -1,17 +1,20 @@
 import React,{ useState,useEffect } from 'react'
 import axios from 'axios'
 import {Table,Button} from 'react-bootstrap'
-import { FaPlus,FaEdit,FaShoppingCart } from "react-icons/fa";
+import { FaPlus,FaEdit,FaShoppingCart,FaTrash } from "react-icons/fa";
 import NewProduct from './NewProdudct'
 import moment from 'moment'
 import Notification from './Notification/Notification'
 import EditProduct from './EditProduct'
+import Empty from './Empty/Empty'
+import { ReactComponent as Void } from './empty.svg'
 
 const TableProducts = ({products,getProducts}) => {
   const [show,setShow] = useState(false)
   const [showEdit,setShowEdit] = useState(false)
   const [idEdition,setIdEdition] = useState("")
   const [confirm,setConfirm] = useState(false)
+  const [confirmDelete,setConfirmDelete] = useState(false)
   const [newProduct,setNewProduct] = useState({
     name:"",
     minutes:"",
@@ -100,8 +103,7 @@ const TableProducts = ({products,getProducts}) => {
           minutesError:"",
           secondsError:""
       })
-      setIdEdition(product.id)
-      
+      setIdEdition(product.id) 
     }
 
     const sendEdition = (e) => {
@@ -124,6 +126,14 @@ const TableProducts = ({products,getProducts}) => {
       }
     }
 
+    const deleteProduct = (prod) => {
+      const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
+      dataFirebase.delete(`/products/${prod.id}.json`)
+      .then(res => setConfirmDelete(true))
+      .catch(err => console.log(err) )
+      
+    }
+
     const placeNerOrder = (almostNewOrder) => {
       const currentTime = new Date()
       const timeStart = `${currentTime.getHours()}:${currentTime.getMinutes()}:${currentTime.getSeconds()}`
@@ -135,87 +145,104 @@ const TableProducts = ({products,getProducts}) => {
         .then(res => setConfirm(true))
         .catch(err => console.log(err) )
     }
+
+
+  
     return (
       <>
-      <div className='d-flex justify-content-end align-items-center mb-3'>
-       <label className="mr-2" >Add new product</label>
-       <Button 
-          className='rounded-circle' 
-          variant="success"
-          onClick={handleAddProduct}>
-          <FaPlus/>
-        </Button>
-      </div>
-      <div  className="d-flex justify-content-center">
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th className="text-center">Product</th>
-              <th className="text-center" >Time to prepare</th>
-              <th className="text-center" >Action</th>
-            </tr>
-          </thead>
-          <tbody>  
-            { products.map(product  => (
-             <tr>
-              <td className="text-center">{product.name}</td>
-              <td className="text-center">{product.minutes}:{product.seconds}</td>
-              <td className="d-flex justify-content-center"> 
-              <Button
-                variant="primary"
-                onClick={()=>placeNerOrder(product)}
-                >
-                <FaShoppingCart/>
-              </Button>
-              <Button
-                className="mx-3"
-                variant="primary"
-                onClick={(e)=>showEdition(e,product)}
-                >
-                <FaEdit />
-              </Button>
-              {/*<Button
-                variant="primary"
-                onClick={()=>placeNerOrder(product)}
-                >
-                <FaTrash />
-              </Button>*/}
-              </td>
-            </tr>
-        ))}
-          </tbody>
-        </Table>
-
-        < NewProduct 
-          show={show}
-          setShow={setShow}
-          sendData={sendData}
-          handleChange={handleChange}
-          name={name}
-          minutes={minutes}
-          seconds={seconds}
-          nameError={nameError}
-          minutesError={minutesError}
-          secondsError={secondsError}
-        />
+       <div className='d-flex justify-content-end align-items-center mb-3'>
+          <label className="mr-2" >Add new product</label>
+          <Button 
+              className='rounded-circle' 
+              variant="success"
+              onClick={handleAddProduct}>
+              <FaPlus/>
+            </Button>
+          </div>
+      {products.length > 0 ? (
+        <> 
+          <div  className="d-flex justify-content-center">
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th className="text-center">Product</th>
+                  <th className="text-center" >Time to prepare</th>
+                  <th className="text-center" >Action</th>
+                </tr>
+              </thead>
+              <tbody>  
+                { products.map(product  => (
+                <tr>
+                  <td className="text-center">{product.name}</td>
+                  <td className="text-center">{product.minutes}:{product.seconds}</td>
+                  <td className="d-flex justify-content-center"> 
+                  <Button
+                    variant="primary"
+                    onClick={()=>placeNerOrder(product)}
+                    >
+                    <FaShoppingCart/>
+                  </Button>
+                  <Button
+                    className="mx-3"
+                    variant="primary"
+                    onClick={(e)=>showEdition(e,product)}
+                    >
+                    <FaEdit />
+                  </Button>
+                  <Button
+                    variant="primary"
+                    onClick={()=>deleteProduct(product)}
+                    >
+                    <FaTrash />
+                  </Button>
+                  </td>
+                </tr>
+            ))}
+              </tbody>
+            </Table>
+     
+            < EditProduct 
+              show={showEdit}
+              setShow={setShowEdit}
+              sendData={sendEdition}
+              handleChange={handleChange}
+              name={name}
+              minutes={minutes}
+              seconds={seconds}
+              nameError={nameError}
+              minutesError={minutesError}
+              secondsError={secondsError}
+            />
+            </div>
+          </>
+      ) : (
         
-        < EditProduct 
-          show={showEdit}
-          setShow={setShowEdit}
-          sendData={sendEdition}
-          handleChange={handleChange}
-          name={name}
-          minutes={minutes}
-          seconds={seconds}
-          nameError={nameError}
-          minutesError={minutesError}
-          secondsError={secondsError}
-        />
-        </div>
+        <Empty 
+          Component={Void} 
+          headMessage="No hay ordernes aqui"  
+          message="Opps!! no hay nada que mostrar aqui" />
+      )}
+       < NewProduct 
+              show={show}
+              setShow={setShow}
+              sendData={sendData}
+              handleChange={handleChange}
+              name={name}
+              minutes={minutes}
+              seconds={seconds}
+              nameError={nameError}
+              minutesError={minutesError}
+              secondsError={secondsError}
+            />
         <Notification 
-          messsage="Nueva orden agregada con exito"
+          message="New order added successfully, please check:  In process tab "
           setConfirm={setConfirm}
           confirm={confirm}
+          />
+        <Notification 
+          message="Product deleted successfully,please press F5 to check it"
+          setConfirm={setConfirmDelete}
+          confirm={confirmDelete}
           />
     </>
     )

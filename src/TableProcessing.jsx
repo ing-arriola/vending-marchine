@@ -43,7 +43,7 @@ const TableProcessing = ({loading,products,state}) => {
     const componentToRender = () => {
       let component=null
 
-      if (products.length > 0) {
+      if (products.length > 0 && !loading) {
         component = table
       }else{
         component = <Empty 
