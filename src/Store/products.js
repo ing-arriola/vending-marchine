@@ -13,9 +13,9 @@ let products = store => {
             )
             return  {products:prods}    
     })
-    store.on('newProduct',({products},order)=>{
+    store.on('newProduct',({products},product)=>{
         return{
-            processing: [...products, order]
+            products: [...products, product]
         }
     })
 }
