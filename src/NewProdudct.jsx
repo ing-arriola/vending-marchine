@@ -1,7 +1,32 @@
 import React from 'react'
+import axios from 'axios'
+import {useStoreon} from 'storeon/react'
 import {Button,Modal,Form,Row,Col} from 'react-bootstrap'
 
-const NewProdudct = ({show,sendData,handleChange,name,minutes,seconds,setShow,nameError,secondsError,minutesError}) => {
+const NewProdudct = ({show,handleChange,name,minutes,seconds,setShow,nameError,secondsError,minutesError,validate,setNewProduct,newProduct}) => {
+  const {dispatch} = useStoreon('products')
+  const sendData = (e) => {
+    e.preventDefault()
+    const isValid = validate()
+    if(isValid){
+      const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
+    dataFirebase.post('/products.json',newProduct)
+      .then(res => {
+        dispatch('newProduct',{...newProduct,id:res.data.name})
+      })
+      setShow(false)
+      setNewProduct({
+        name:"",
+        minutes:"",
+        seconds:"",
+        nameError:"",
+        minutesError:"",
+        secondsError:""
+      })
+      //getProducts()
+    }
+  }
+
     return (
         <Modal
             show={show}

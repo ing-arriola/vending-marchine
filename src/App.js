@@ -5,7 +5,7 @@ import PrivateRoute from './PrivateRoute'
 import VendingContainer from './VendingContainer'
 import NavbarContainer from './NavbarContainer'
 import {StoreContext} from 'storeon/react'
-import store from './store'
+import store from './Store/store'
 
 const domain=process.env.REACT_APP_AUTH0_DOMAIN
 const id=process.env.REACT_APP_AUTH0_CLIENT_ID

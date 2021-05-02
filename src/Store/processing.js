@@ -1,5 +1,3 @@
-import {createStoreon} from 'storeon'
-//import { persistState } from '@storeon/localstorage'
 import axios from 'axios'
 
 let processing = store => {
@@ -30,8 +28,4 @@ let processing = store => {
       
 }
 
-const store = createStoreon([
-    processing
-])
-
-export default store;
+export default processing
