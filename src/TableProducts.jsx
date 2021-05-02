@@ -10,7 +10,7 @@ import EditProduct from './EditProduct'
 import Empty from './Empty/Empty'
 import { ReactComponent as Void } from './empty.svg'
 
-const TableProducts = ({products,getProducts}) => {
+const TableProducts = ({products}) => {
   const [show,setShow] = useState(false)
   const [showEdit,setShowEdit] = useState(false)
   const [idEdition,setIdEdition] = useState("")
@@ -75,26 +75,6 @@ const TableProducts = ({products,getProducts}) => {
 
     }
      
-    const sendData = (e) => {
-      e.preventDefault()
-      const isValid = validate()
-      if(isValid){
-        const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
-      dataFirebase.post('/products.json',newProduct)
-        .then(res => console.log(res))
-        setShow(false)
-        setNewProduct({
-          name:"",
-          minutes:"",
-          seconds:"",
-          nameError:"",
-          minutesError:"",
-          secondsError:""
-        })
-        getProducts()
-      }
-    }
-
     const showEdition = (e,product) => {
       setShowEdit(true)
       setNewProduct({
@@ -124,7 +104,7 @@ const TableProducts = ({products,getProducts}) => {
           minutesError:"",
           secondsError:""
         })
-        getProducts()
+        //getProducts()
       }
     }
 
@@ -230,7 +210,6 @@ const TableProducts = ({products,getProducts}) => {
        < NewProduct 
               show={show}
               setShow={setShow}
-              sendData={sendData}
               handleChange={handleChange}
               name={name}
               minutes={minutes}
@@ -238,6 +217,9 @@ const TableProducts = ({products,getProducts}) => {
               nameError={nameError}
               minutesError={minutesError}
               secondsError={secondsError}
+              validate={validate}
+              setNewProduct={setNewProduct}
+              newProduct={newProduct}
             />
         <Notification 
           message="New order added successfully, please check:  In process tab "
