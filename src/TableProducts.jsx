@@ -4,6 +4,7 @@ import {Table,Button} from 'react-bootstrap'
 import { FaPlus,FaEdit,FaShoppingCart,FaTrash } from "react-icons/fa";
 import NewProduct from './NewProdudct'
 import moment from 'moment'
+import {useStoreon} from 'storeon/react'
 import Notification from './Notification/Notification'
 import EditProduct from './EditProduct'
 import Empty from './Empty/Empty'
@@ -15,6 +16,7 @@ const TableProducts = ({products,getProducts}) => {
   const [idEdition,setIdEdition] = useState("")
   const [confirm,setConfirm] = useState(false)
   const [confirmDelete,setConfirmDelete] = useState(false)
+  const {dispatch} = useStoreon('processing')
   const [newProduct,setNewProduct] = useState({
     name:"",
     minutes:"",
@@ -142,7 +144,10 @@ const TableProducts = ({products,getProducts}) => {
       const newOrder = {...almostNewOrder,state:1,time:timeTarget}
       const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
       dataFirebase.post('/processing.json',newOrder)
-        .then(res => setConfirm(true))
+        .then(res => {
+          dispatch('newOrder', newOrder)
+          setConfirm(true)
+        })
         .catch(err => console.log(err) )
     }
 
