@@ -88,25 +88,7 @@ const TableProducts = ({products}) => {
       setIdEdition(product.id) 
     }
 
-    const sendEdition = (e) => {
-      e.preventDefault()
-      const isValid = validate()
-      if(isValid){
-        const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
-      dataFirebase.put(`/products/${idEdition}.json`,newProduct)
-        .then(res => console.log(res))
-        setShowEdit(false)
-        setNewProduct({
-          name:"",
-          minutes:"",
-          seconds:"",
-          nameError:"",
-          minutesError:"",
-          secondsError:""
-        })
-        //getProducts()
-      }
-    }
+   
 
     const deleteProduct = (prod) => {
       const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
@@ -189,7 +171,6 @@ const TableProducts = ({products}) => {
             < EditProduct 
               show={showEdit}
               setShow={setShowEdit}
-              sendData={sendEdition}
               handleChange={handleChange}
               name={name}
               minutes={minutes}
@@ -197,6 +178,11 @@ const TableProducts = ({products}) => {
               nameError={nameError}
               minutesError={minutesError}
               secondsError={secondsError}
+              validate={validate}
+              setNewProduct={setNewProduct}
+              setShowEdit={setShowEdit}
+              idEdition={idEdition}
+              newProduct={newProduct}
             />
             </div>
           </>
