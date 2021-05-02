@@ -22,6 +22,11 @@ let processing = store => {
                 )
         }
     })
+    store.on('newOrder',({processing},order)=>{
+        return{
+            processing: [...processing, order]
+        }
+    })
       
 }
 
