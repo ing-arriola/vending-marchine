@@ -20,14 +20,14 @@ let products = store => {
     })
     store.on('updateProduct',({products}, product)=>{
         return{
-            processing: products.map(prod => 
+            products: products.map(prod => 
                 prod.id === product.id ? product : prod
                 )
         }
     })
     store.on('deleteProduct',({products}, id)=>{
         return{
-            processing: products.filter(product => product.id !== id )            
+            products: products.filter(product => product.id !== id )            
         }
     })
 }
