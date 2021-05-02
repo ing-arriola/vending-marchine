@@ -1,29 +1,14 @@
-import React,{ useEffect, useState } from 'react'
-import axios from 'axios'
+import React from 'react'
 import TableProducts from './TableProducts'
+import {useStoreon} from 'storeon/react'
 
 const Order = () => { 
-    const [products,setProducts] = useState([])
-
-    const getProducts = () => {
-        const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
-        dataFirebase.get('/products.json')
-        .then(res => {
-            const prods = []
-            for (const key in res.data) {
-                prods.push({...res.data[key],id:key})
-            }
-            setProducts(prods)
-        } )
-    }
-
-    useEffect(()=>{
-        getProducts()
-    },[])
-
+    const {products} = useStoreon('products')
+    console.log(products)
+    
     return (
         <>
-         <TableProducts products={products} getProducts={getProducts}/>  
+         <TableProducts products={products} />  
         </>
     )
 }
