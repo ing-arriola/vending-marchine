@@ -4,7 +4,7 @@ import axios from 'axios'
 
 
 const Done = ({product}) => {
-    const {dispatch} = useStoreon('tasks')
+    const {dispatch} = useStoreon('processing')
 
     const competed = (res,id) => {
         dispatch('completed',{...res,id})
