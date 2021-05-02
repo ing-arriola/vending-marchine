@@ -21,7 +21,7 @@ let products = store => {
     store.on('updateProduct',({products}, product)=>{
         return{
             processing: products.map(prod => 
-                prod.id === product.id ? product : process
+                prod.id === product.id ? product : prod
                 )
         }
     })
