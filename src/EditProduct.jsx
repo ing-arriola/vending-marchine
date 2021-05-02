@@ -1,16 +1,19 @@
 import React from 'react'
 import {Button,Modal,Form,Row,Col} from 'react-bootstrap'
 import axios from 'axios'
+import {useStoreon} from 'storeon/react'
 
 const NewProdudct = ({show,handleChange,name,minutes,seconds,setShow,nameError,secondsError,minutesError,validate,setNewProduct,setShowEdit,idEdition,newProduct}) => {
-
+  const {dispatch} = useStoreon('products')
   const sendData = (e) => {
     e.preventDefault()
     const isValid = validate()
     if(isValid){
       const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
     dataFirebase.put(`/products/${idEdition}.json`,newProduct)
-      .then(res => console.log(res))
+      .then(res => {
+        dispatch('updateProduct',{...newProduct,id:idEdition})
+      })
       setShowEdit(false)
       setNewProduct({
         name:"",
