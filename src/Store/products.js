@@ -18,6 +18,18 @@ let products = store => {
             products: [...products, product]
         }
     })
+    store.on('updateProduct',({products}, product)=>{
+        return{
+            products: products.map(prod => 
+                prod.id === product.id ? product : prod
+                )
+        }
+    })
+    store.on('deleteProduct',({products}, id)=>{
+        return{
+            products: products.filter(product => product.id !== id )            
+        }
+    })
 }
 
 export default products
