@@ -48,8 +48,8 @@ const TableProcessing = ({loading,products,state}) => {
       }else{
         component = <Empty 
           Component={Void} 
-          headMessage="No hay ordernes aqui"  
-          message="Opps!! no hay nada que mostrar aqui" />
+          headMessage="Opps! there aren't orders yet :("  
+          message="There is nothing to show here" />
       }
       return component
     }
