@@ -2,6 +2,7 @@ import React,{ useState } from 'react'
 import HeaderOptions from './HeaderOptions'
 import Order from './Order'
 import Processing from './Processing'
+import { ReactComponent as Standing } from './standing.svg'
 
 const VendingContainer = () => {
     const [currentTab,setCurrentTab] = useState({
@@ -11,7 +12,10 @@ const VendingContainer = () => {
     })
     return (
         <div className="d-flex justify-content-center align-items-center flex-column min-vh-100" >
-            <h1 className="mb-5 display-3" >Vending machine</h1>
+            <h1 className='text-center' >Vending machine</h1>
+            <div className='mb-3' >
+                <Standing />
+            </div>
             <HeaderOptions
                 currentTab={currentTab} 
                 setCurrentTab={setCurrentTab} />

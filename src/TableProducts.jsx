@@ -195,8 +195,8 @@ const TableProducts = ({products}) => {
         
         <Empty 
           Component={Void} 
-          headMessage="No hay ordernes aqui"  
-          message="Opps!! no hay nada que mostrar aqui" />
+          headMessage="Opps!! there aren't products yet :("  
+          message="Please add some products by pressing the Add new product button" />
       )}
        < NewProduct 
               show={show}
