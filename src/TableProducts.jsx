@@ -7,6 +7,7 @@ import moment from 'moment'
 import {useStoreon} from 'storeon/react'
 import Notification from './Notification/Notification'
 import EditProduct from './EditProduct'
+import DeleteProduct from './Confirmation/DeleteProduct'
 import Empty from './Empty/Empty'
 import { ReactComponent as Void } from './empty.svg'
 
@@ -16,6 +17,8 @@ const TableProducts = ({products}) => {
   const [idEdition,setIdEdition] = useState("")
   const [confirm,setConfirm] = useState(false)
   const [confirmDelete,setConfirmDelete] = useState(false)
+  const [askConfirm,setAskConfirm] = useState(false)
+  const [prodToDelete,setProdToDelete] = useState("")
   const {dispatch} = useStoreon('processing')
   const [newProduct,setNewProduct] = useState({
     name:"",
@@ -91,11 +94,13 @@ const TableProducts = ({products}) => {
    
 
     const deleteProduct = (prod) => {
-      const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
-      dataFirebase.delete(`/products/${prod.id}.json`)
-      .then(res => setConfirmDelete(true))
-      .catch(err => console.log(err) )
+      setProdToDelete(prod)
+      setAskConfirm(true)
       
+      //const dataFirebase = axios.create({baseURL: process.env.REACT_APP_FIREBASE_URL})
+      //dataFirebase.delete(`/products/${prod.id}.json`)
+      //.then(res => setConfirmDelete(true))
+      //.catch(err => console.log(err) )
     }
 
     const placeNerOrder = (almostNewOrder) => {
@@ -217,6 +222,12 @@ const TableProducts = ({products}) => {
           setConfirm={setConfirmDelete}
           confirm={confirmDelete}
           />
+        <DeleteProduct 
+          message="Are you sure?"
+          setConfirm={setAskConfirm}
+          confirm={askConfirm}
+          prodToDelete={prodToDelete}
+        />
     </>
     )
 }
