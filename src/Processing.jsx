@@ -8,7 +8,7 @@ const Processing = ({state}) => {
     const {processing} = useStoreon('processing')
     const [currentPage,setCurrentPage] = useState(1)
     const itemsPerPage=10
-    const data = processing.filter(product => product.state === state)
+    const data = processing.filter(product => product.state === state).reverse()
     const indexLastItem = (currentPage * itemsPerPage)
     const indexFirstItem = indexLastItem - itemsPerPage
     const currentItems = data.slice(indexFirstItem,indexLastItem)
